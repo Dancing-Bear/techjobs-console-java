@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -23,7 +24,7 @@ public class JobData {
 
     /**
      * Fetch list of all values from loaded data,
-     * without duplicates, for a given column.
+     * without duplicates, for a given column
      *
      * @param field The column to retrieve values from
      * @return List of all of the values of the given field
@@ -62,7 +63,7 @@ public class JobData {
      * with "Enterprise Holdings, Inc".
      *
      * @param column   Column that should be searched.
-     * @param value Value of teh field to search for
+     * @param value Value of the field to search for
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
@@ -70,14 +71,45 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
+        value = value.toLowerCase();
+
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
         for (HashMap<String, String> row : allJobs) {
 
             String aValue = row.get(column);
 
+            aValue = aValue.toLowerCase();
+
             if (aValue.contains(value)) {
                 jobs.add(row);
+            }
+        }
+
+        return jobs;
+    }
+
+    public static ArrayList<HashMap<String, String>> findByValue(String search) {
+
+        // load data, if not already loaded
+        loadData();
+
+        search = search.toLowerCase();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> row : allJobs) {
+
+            for (String value : row.values()) {
+
+                if (!jobs.contains(row)) {
+
+                    value = value.toLowerCase();
+
+                    if (value.contains(search)) {
+                        jobs.add(row);
+                    }
+                }
             }
         }
 
